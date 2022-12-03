@@ -30,10 +30,22 @@ func main() {
 	var timeInterval int
 	flag.IntVar(&timeInterval, "timeInterval", 1, "timeInverval in seconds")
 
+	// Parse endpoint, -endpoint flag
 	var endpoint string
 	flag.StringVar(&endpoint, "endpoint", "http://localhost:8080/ping", "endpoint")
 
 	flag.Parse()
+
+	var functionsExecuted int = 0
+	var timeElapsed int = 0
+
+	resultsFile, err := os.Create("results.csv")
+
+	if err != nil {
+		log.Fatalln("failed to open file", err)
+	}
+
+	w := csv.NewWriter(resultsFile)
 
 	file, err := os.Open(dataPath)
 	if err != nil {
@@ -77,13 +89,34 @@ func main() {
 			}
 
 			go ping(endpoint, numericHits)
+			functionsExecuted += numericHits
+		}
+
+		if column > 4 {
+			resultsFile.Truncate(0) // comment or uncomment
+			resultsFile.Seek(0, 0)
+
+			results := [][]string{
+				{"functions_executed", strconv.Itoa(functionsExecuted)},
+				{"time_elapsed", strconv.Itoa(timeElapsed)},
+				{"average_functions_per_second", strconv.Itoa(functionsExecuted / timeElapsed)},
+			}
+
+			err = w.WriteAll(results)
+
+			if err != nil {
+				log.Fatal(err)
+			}
 		}
 
 		time.Sleep(time.Duration(timeInterval) * time.Second)
+		timeElapsed += timeInterval
 		column++
 
 		if column >= 1444 {
 			break
 		}
 	}
+
+	defer resultsFile.Close()
 }
