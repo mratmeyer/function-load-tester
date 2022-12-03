@@ -27,6 +27,10 @@ func main() {
 	var functionsCount int
 	flag.IntVar(&functionsCount, "functionsCount", 1, "functionsCount")
 
+	// Parse timeInterval, -timeInterval flag (in seconds)
+	var timeInterval int
+	flag.IntVar(&timeInterval, "timeInterval", 1, "timeInverval in seconds")
+
 	flag.Parse()
 
 	file, err := os.Open(dataPath)
@@ -73,7 +77,7 @@ func main() {
 			go ping(numericHits)
 		}
 
-		time.Sleep(1 * time.Second)
+		time.Sleep(time.Duration(timeInterval) * time.Second)
 		column++
 
 		if column >= 1444 {
