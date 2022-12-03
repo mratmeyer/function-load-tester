@@ -12,12 +12,13 @@ Before you run the program, download the (Azure Functions Public Dataset file(~1
 
 ## Usage
 
-To run the program, after building it, use `./function-load-tester`. function-load-tester contains a variety of flags that can be used.
+To run the program, after building it, use `./function-load-tester`. function-load-tester contains a variety of flags that can be used. The example flags represent default values.
 
 - `-dataPath (string)` - Specifies the name of the dataset CSV file. Ex: `-dataPath=invocations_per_function_md.anon.d01.csv`
 - `-functionsCount (int)` - Specifies the amount of functions to read. Ex: `-functionsCount=100`
 - `-timeInterval (int)` - Specifies the time interval between batches in seconds. Ex: `-timeInterval=1`
 - `-endpoint (string)` - Specifies the HTTP endpoint to hit. Ex: `-endpoint=http://localhost:8080/ping`
+- `-timeout (int)` - Specifies the timeout for HTTP requests. Ex: `-timeout=10`
 
 ## Results
 

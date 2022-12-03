@@ -11,9 +11,12 @@ import (
 	"time"
 )
 
-func ping(endpoint string, n int) {
+func ping(endpoint string, n int, timeout int) {
 	for i := 0; i < n; i++ {
-		http.Get(endpoint)
+		client := http.Client{
+			Timeout: time.Duration(timeout) * time.Second,
+		}
+		client.Get(endpoint)
 	}
 }
 
@@ -33,6 +36,10 @@ func main() {
 	// Parse endpoint, -endpoint flag
 	var endpoint string
 	flag.StringVar(&endpoint, "endpoint", "http://localhost:8080/ping", "endpoint")
+
+	// Parse timeout, -timeout flag (in seconds)
+	var timeout int
+	flag.IntVar(&timeout, "timeout", 10, "timeout in seconds")
 
 	flag.Parse()
 
@@ -88,7 +95,7 @@ func main() {
 				log.Fatal("Error converting string to int ", err)
 			}
 
-			go ping(endpoint, numericHits)
+			go ping(endpoint, numericHits, timeout)
 			functionsExecuted += numericHits
 		}
 
