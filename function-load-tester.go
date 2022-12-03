@@ -3,18 +3,17 @@ package main
 import (
 	"encoding/csv"
 	"flag"
-	"fmt"
 	"io"
 	"log"
+	"net/http"
 	"os"
 	"strconv"
 	"time"
 )
 
-func ping(n int) {
+func ping(endpoint string, n int) {
 	for i := 0; i < n; i++ {
-		fmt.Print("ping")
-		// http.Get("http://[::]:8000/")
+		http.Get(endpoint)
 	}
 }
 
@@ -30,6 +29,9 @@ func main() {
 	// Parse timeInterval, -timeInterval flag (in seconds)
 	var timeInterval int
 	flag.IntVar(&timeInterval, "timeInterval", 1, "timeInverval in seconds")
+
+	var endpoint string
+	flag.StringVar(&endpoint, "endpoint", "http://localhost:8080/ping", "endpoint")
 
 	flag.Parse()
 
@@ -74,7 +76,7 @@ func main() {
 				log.Fatal("Error converting string to int ", err)
 			}
 
-			go ping(numericHits)
+			go ping(endpoint, numericHits)
 		}
 
 		time.Sleep(time.Duration(timeInterval) * time.Second)
