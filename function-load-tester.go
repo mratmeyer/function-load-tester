@@ -35,9 +35,7 @@ func main() {
 	}
 	defer file.Close()
 
-	var data [100][]string
-	// var data []string
-	// data = make([]string, *functionsCount)
+	var data = make([][]string, functionsCount)
 	var index int = 0
 
 	csvReader := csv.NewReader(file)
@@ -57,18 +55,15 @@ func main() {
 
 		index++
 	}
+
 	if err != nil {
 		log.Fatal("Unable to parse file as CSV for "+dataPath, err)
 	}
 
-	// fmt.Println(data)
-
-	var column int = 4
+	var column int = 4 // Start at column 4 to ignore hashes
 
 	for {
 		for i := 1; i < functionsCount-1; i++ {
-			// fmt.Println(data[0][column])
-			// fmt.Println(i, column)
 			var hits = data[i][column]
 			numericHits, err := strconv.Atoi(hits)
 			if err != nil {
@@ -76,23 +71,13 @@ func main() {
 			}
 
 			go ping(numericHits)
-
-			// fmt.Print(hits, ",")
 		}
 
-		// fmt.Println(len(data[0]))
-
 		time.Sleep(1 * time.Second)
-		fmt.Println(column)
 		column++
 
 		if column >= 1444 {
 			break
 		}
 	}
-
-	// var n int = 10
-
-	// go say("world", n)
-	// say("hello", n)
 }
